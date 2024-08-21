@@ -78,13 +78,13 @@ public class AdministratorController {
 	public String insert(@Validated InsertAdministratorForm form,BindingResult bindingResult,Model model) {
 		if (bindingResult.hasErrors()){
 			model.addAttribute("insertAdministratorForm", form);
-            return "insert";
+            return "administrator/insert";
         }
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
 		administratorService.insert(administrator);
-		return "administrator/insert";
+		return "redirect:/";
 	}
 
 	/////////////////////////////////////////////////////
