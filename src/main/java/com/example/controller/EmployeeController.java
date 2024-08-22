@@ -46,7 +46,7 @@ public class EmployeeController {
 	/////////////////////////////////////////////////////
 	/**
 	 * 従業員一覧画面を出力します.
-	 * 
+	 * @param session セッション
 	 * @param model モデル
 	 * @return 従業員一覧画面
 	 */
@@ -65,13 +65,15 @@ public class EmployeeController {
 	 * 従業員詳細画面を出力します.
 	 * 
 	 * @param id    リクエストパラメータで送られてくる従業員ID
+	 * @param session セッション
 	 * @param model モデル
 	 * @return 従業員詳細画面
 	 */
 	@GetMapping("/showDetail")
-	public String showDetail(String id, Model model) {
+	public String showDetail(String id,HttpSession session,Model model) {
 		Employee employee = employeeService.showDetail(Integer.parseInt(id));
 		model.addAttribute("employee", employee);
+		model.addAttribute("administratorName",session.getAttribute("administratorName"));
 		return "employee/detail";
 	}
 
@@ -82,12 +84,15 @@ public class EmployeeController {
 	 * 従業員詳細(ここでは扶養人数のみ)を更新します.
 	 * 
 	 * @param form 従業員情報用フォーム
+	 * @param result バリデーションチェック結果保持
+	 * @param session セッション
+	 * @param model モデル
 	 * @return 従業員一覧画面へリダクレクト
 	 */
 	@PostMapping("/update")
-	public String update(@Validated UpdateEmployeeForm form, BindingResult result, Model model) {
+	public String update(@Validated UpdateEmployeeForm form, BindingResult result,HttpSession session,Model model) {
 		if (result.hasErrors()) {
-			return showDetail(form.getId(), model);
+			return showDetail(form.getId(),session,model);
 		}
 		Employee employee = new Employee();
 		employee.setId(form.getIntId());

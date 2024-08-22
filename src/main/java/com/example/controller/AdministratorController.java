@@ -72,6 +72,8 @@ public class AdministratorController {
 	 * 管理者情報を登録します.
 	 * 
 	 * @param form 管理者情報用フォーム
+	 * @param bindingResult バリデーションチェック結果
+	 * @param model モデル
 	 * @return ログイン画面へリダイレクト
 	 */
 	@PostMapping("/insert")
@@ -80,11 +82,11 @@ public class AdministratorController {
 			&& !administratorService.checkMailAddress(form.getMailAddress())) {
 			bindingResult.rejectValue("mailAddress", "error.mailAddress", "このメールアドレスはすでに登録されています。");
 		}
-		if (!form.getPassword().isEmpty()
+		if(!form.getPassword().isEmpty()
 			&& !form.getConfirmPassword().isEmpty()
-			&& !form.getPassword().equals(form.getConfirmPassword())) {
-			bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "パスワードが異なります。");
-		}
+			&& !form.getPassword().equals(form.getConfirmPassword())){
+				bindingResult.rejectValue("confirmPassword","error.confirmPassword", "パスワードが異なります。");
+			}
 		if (bindingResult.hasErrors()) {
 			model.addAttribute("insertAdministratorForm", form);
 			return "administrator/insert";
@@ -114,6 +116,8 @@ public class AdministratorController {
 	 * ログインします.
 	 * 
 	 * @param form 管理者情報用フォーム
+	 * @param redirectAttributes リダイレクト先に渡すスコープ
+	 * @param session セッション
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@PostMapping("/login")
