@@ -31,6 +31,9 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 
+	@Autowired
+	private HttpSession session;
+
 	/**
 	 * 使用するフォームオブジェクトをリクエストスコープに格納する.
 	 * 
@@ -51,7 +54,7 @@ public class EmployeeController {
 	 * @return 従業員一覧画面
 	 */
 	@GetMapping("/showList")
-	public String showList(HttpSession session,Model model) {
+	public String showList(Model model) {
 		List<Employee> employeeList = employeeService.showList();
 		model.addAttribute("employeeList", employeeList);
 		model.addAttribute("administratorName",session.getAttribute("administratorName"));
@@ -70,7 +73,7 @@ public class EmployeeController {
 	 * @return 従業員詳細画面
 	 */
 	@GetMapping("/showDetail")
-	public String showDetail(String id,HttpSession session,Model model) {
+	public String showDetail(String id,Model model) {
 		Employee employee = employeeService.showDetail(Integer.parseInt(id));
 		model.addAttribute("employee", employee);
 		model.addAttribute("administratorName",session.getAttribute("administratorName"));
@@ -84,15 +87,15 @@ public class EmployeeController {
 	 * 従業員詳細(ここでは扶養人数のみ)を更新します.
 	 * 
 	 * @param form 従業員情報用フォーム
-	 * @param result バリデーションチェック結果保持
+	 * @param result バリデーションチェック結果
 	 * @param session セッション
 	 * @param model モデル
 	 * @return 従業員一覧画面へリダクレクト
 	 */
 	@PostMapping("/update")
-	public String update(@Validated UpdateEmployeeForm form, BindingResult result,HttpSession session,Model model) {
+	public String update(@Validated UpdateEmployeeForm form, BindingResult result,Model model) {
 		if (result.hasErrors()) {
-			return showDetail(form.getId(),session,model);
+			return showDetail(form.getId(),model);
 		}
 		Employee employee = new Employee();
 		employee.setId(form.getIntId());
