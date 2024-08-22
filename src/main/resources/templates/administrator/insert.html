@@ -124,6 +124,30 @@
                     </div>
                   </div>
                 </div>
+                <!-- パスワード（確認用） -->
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-sm-12">
+                      <label for="confirmPassword"> パスワード（確認用）: </label>
+                      <label
+                        th:errors="*{confirmPassword}"
+                        class="error-messages"
+                      >
+                        パスワードを入力してください
+                      </label>
+                      <input
+                        type="password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        class="form-control"
+                        placeholder="password"
+                        th:field="*{confirmPassword}"
+                        th:errorclass="error-input"
+                        value="xxxxxxxx"
+                      />
+                    </div>
+                  </div>
+                </div>                
                 <!-- 登録ボタン -->
                 <div class="form-group">
                   <div class="row">
