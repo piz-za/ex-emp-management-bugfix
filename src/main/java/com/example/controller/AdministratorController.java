@@ -75,11 +75,21 @@ public class AdministratorController {
 	 * @return ログイン画面へリダイレクト
 	 */
 	@PostMapping("/insert")
-	public String insert(@Validated InsertAdministratorForm form,BindingResult bindingResult,Model model) {
-		if (bindingResult.hasErrors()){
+	public String insert(@Validated InsertAdministratorForm form, BindingResult bindingResult, Model model) {
+		if (!form.getMailAddress().isEmpty()
+			&& !administratorService.checkMailAddress(form.getMailAddress())) {
+			bindingResult.rejectValue("mailAddress", "error.mailAddress", "このメールアドレスはすでに登録されています。");
+		}
+		if (!form.getPassword().isEmpty()
+			&& !form.getConfirmPassword().isEmpty()
+			&& !form.getPassword().equals(form.getConfirmPassword())) {
+			bindingResult.rejectValue("confirmPassword", "error.confirmPassword", "パスワードが異なります。");
+		}
+		if (bindingResult.hasErrors()) {
 			model.addAttribute("insertAdministratorForm", form);
-            return "administrator/insert";
-        }
+			return "administrator/insert";
+		}
+
 		Administrator administrator = new Administrator();
 		// フォームからドメインにプロパティ値をコピー
 		BeanUtils.copyProperties(form, administrator);
@@ -107,12 +117,13 @@ public class AdministratorController {
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@PostMapping("/login")
-	public String login(LoginForm form, RedirectAttributes redirectAttributes) {
+	public String login(LoginForm form, RedirectAttributes redirectAttributes,HttpSession session) {
 		Administrator administrator = administratorService.login(form.getMailAddress(), form.getPassword());
 		if (administrator == null) {
 			redirectAttributes.addFlashAttribute("errorMessage", "メールアドレスまたはパスワードが不正です。");
 			return "redirect:/";
 		}
+		session.setAttribute("administratorName", administrator.getName());
 		return "redirect:/employee/showList";
 	}
 
