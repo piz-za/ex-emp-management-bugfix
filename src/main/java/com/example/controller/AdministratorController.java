@@ -117,7 +117,6 @@ public class AdministratorController {
 	 * 
 	 * @param form 管理者情報用フォーム
 	 * @param redirectAttributes リダイレクト先に渡すスコープ
-	 * @param session セッション
 	 * @return ログイン後の従業員一覧画面
 	 */
 	@PostMapping("/login")
